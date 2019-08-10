@@ -1,0 +1,33 @@
+{
+  "name": "Flashcard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "seed": "node bin/run-seed.js",
+    "start:server": "./node_modules/.bin/nodemon server/index.js",
+    "start:dev": "npm run seed && npm run start:server",
+    "build": "webpack -w"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "nodemon": "^1.19.1",
+    "webpack": "^4.39.1",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "^3.8.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "faker": "^4.1.0",
+    "pg": "^7.12.0",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "sequelize": "^5.12.3"
+  }
+}
