@@ -1,11 +1,11 @@
 const db = require('./db')
-const { User, Flashcard, Session } = require('./models')
+const { User, Flashcard, Session, SessionCard } = require('./models')
 
 const initDb = (force = false) => {
   return db
     .authenticate()
     .then(() => {
-      Flashcard.belongsTo(Session)
+      Flashcard.belongsToMany(Session, { through: SessionCard })
       Session.hasMany(Flashcard)
 
       Session.belongsTo(User)

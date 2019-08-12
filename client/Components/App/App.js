@@ -1,29 +1,45 @@
 import React, { Component } from 'react'
-import Flashcard from '../Flashcard'
 import { connect } from 'react-redux'
-import { getFlashcardsThunk } from '../../store/flashcards/action'
 
-const mapStateToProps = ({ flashcards }) => {
-  return {
-    flashcards
-  }
-}
+import Flashcard from '../Flashcard'
+
+import { createSessionThunk } from '../../store/session/action'
 
 const mapDispatchToProps = dispatch => {
   return {
-    getFlashcards: () => dispatch(getFlashcardsThunk())
+    createSession: () => dispatch(createSessionThunk())
   }
 }
 class App extends Component {
-  componentDidMount() {
-    this.props.getFlashcards()
+  constructor() {
+    super()
+    this.state = {
+      sessionStarted: false
+    }
   }
+
+  toggleSession() {
+    this.setState({ sessionStarted: true })
+    this.props.createSession()
+  }
+
   render() {
-    return <div>{this.props.flashcards.length ? <Flashcard /> : ''}</div>
+    const { sessionStarted } = this.state
+    return (
+      <div>
+        {sessionStarted ? (
+          <Flashcard />
+        ) : (
+          <button type="button" onClick={() => this.toggleSession()}>
+            Start!
+          </button>
+        )}
+      </div>
+    )
   }
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(App)

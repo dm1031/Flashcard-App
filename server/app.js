@@ -2,7 +2,8 @@ const express = require('express')
 const path = require('path')
 const app = express()
 
-const { User, Flashcard, Session } = require('./db/models')
+const { User, Flashcard, Session, SessionCard } = require('./db/models')
+app.use(express.json())
 
 app.get('/', (req, res, next) => {
   res.sendFile(path.join(__dirname, '..', 'client/index.html'))
@@ -10,11 +11,31 @@ app.get('/', (req, res, next) => {
 
 app.use('/public', express.static(path.join(__dirname, '..', 'public')))
 
-// ------ routes
+// ------ get routes
 
 app.get('/flashcards', (req, res, next) => {
   Flashcard.findAll()
     .then(flashcards => res.send(flashcards))
+    .catch(next)
+})
+
+app.get('/flashcard', (req, res, next) => {
+  Flashcard.getRandomFlashcard()
+    .then(flashcard => res.send(flashcard))
+    .catch(next)
+})
+
+// ------ post routes
+
+app.post('/session', (req, res, next) => {
+  Session.create({ time: 60 })
+    .then(session => res.send(session))
+    .catch(next)
+})
+
+app.post('/sessionCard', (req, res, next) => {
+  SessionCard.create(req.body)
+    .then(sessionCard => res.send(sessionCard))
     .catch(next)
 })
 
