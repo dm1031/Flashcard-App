@@ -3,6 +3,7 @@ const path = require('path')
 const app = express()
 
 const { User, Flashcard, Session, SessionCard } = require('./db/models')
+
 app.use(express.json())
 
 app.get('/', (req, res, next) => {
@@ -28,7 +29,7 @@ app.get('/flashcard', (req, res, next) => {
 // ------ post routes
 
 app.post('/session', (req, res, next) => {
-  Session.create({ time: 60 })
+  Session.create({ timeStarted: new Date() })
     .then(session => res.send(session))
     .catch(next)
 })

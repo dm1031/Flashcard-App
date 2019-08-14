@@ -2,8 +2,15 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import Flashcard from '../Flashcard'
+import Timer from '../Timer'
 
 import { createSessionThunk } from '../../store/session/action'
+
+const mapStateToProps = ({ session }) => {
+  return {
+    session
+  }
+}
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -25,10 +32,14 @@ class App extends Component {
 
   render() {
     const { sessionStarted } = this.state
+    const { session } = this.props
     return (
       <div>
-        {sessionStarted ? (
-          <Flashcard />
+        {sessionStarted && session.timeStarted ? (
+          <div>
+            <Timer />
+            <Flashcard />
+          </div>
         ) : (
           <button type="button" onClick={() => this.toggleSession()}>
             Start!
@@ -40,6 +51,6 @@ class App extends Component {
 }
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(App)

@@ -6,8 +6,13 @@ const Session = db.define('session', {
     primaryKey: true,
     defaultValue: db.Sequelize.UUIDV4
   },
-  time: {
+  timeStarted: {
+    type: db.Sequelize.DATE,
+    allowNull: false
+  },
+  timeNeeded: {
     type: db.Sequelize.INTEGER,
+    defaultValue: 60,
     allowNull: false
   },
   highScore: {

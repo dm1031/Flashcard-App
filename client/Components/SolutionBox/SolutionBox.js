@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
+
+import { compareSolutions } from '../../Utilities'
 
 import { addSessionCardThunk } from '../../store/sessionCard/action'
 
@@ -17,44 +19,50 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const SolutionBox = ({ flashcard, session, getFlashcard, addSessionCard }) => {
-  const [userSolution, setUserSolution] = useState('')
-  const [feedback, setFeedback] = useState('')
-
-  const compareSolutions = (userSolution, flashcardSolution) => {
-    if (parseInt(userSolution, 10) === flashcardSolution) {
-      return 'correct'
+class SolutionBox extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      field: '',
+      feedback: ''
     }
-    return 'incorrect'
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  const handleSubmit = ev => {
-    const result = compareSolutions(userSolution, flashcard.solution)
-    addSessionCard(session.id, flashcard.id, result).then(action => {
-      const { sessionCard } = action
-      setFeedback(sessionCard.result)
-    })
-    setUserSolution('')
-    getFlashcard()
-    ev.preventDefault()
+  handleSubmit(e) {
+    const result = compareSolutions(
+      parseInt(this.state.field, 10),
+      this.props.flashcard.solution
+    )
+    this.props
+      .addSessionCard(this.props.session.id, this.props.flashcard.id, result)
+      .then(action => {
+        const { sessionCard } = action
+        this.setState({ feedback: sessionCard.result })
+      })
+    this.setState({ field: '' })
+    this.props.getFlashcard()
+    e.preventDefault()
   }
 
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Answer
-          <input
-            type="text"
-            value={userSolution}
-            onChange={ev => setUserSolution(ev.target.value)}
-          />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
-      <div>{feedback ? feedback : ''}</div>
-    </div>
-  )
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Answer:
+            <input
+              type="text"
+              value={this.state.field}
+              onChange={e => this.setState({ field: e.target.value })}
+            />
+            <input type="submit" value="Submit" />
+          </label>
+        </form>
+        {this.state.feedback ? this.state.feedback : ''}
+      </div>
+    )
+  }
 }
 
 export default connect(
