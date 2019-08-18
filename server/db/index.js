@@ -5,11 +5,11 @@ const initDb = (force = false) => {
   return db
     .authenticate()
     .then(() => {
-      Flashcard.belongsToMany(Session, { through: SessionCard })
-      Session.hasMany(Flashcard)
-
       Session.belongsTo(User)
       User.hasMany(Session)
+
+      Flashcard.belongsToMany(Session, { through: SessionCard })
+      Session.hasMany(Flashcard)
 
       return db.sync({ force })
     })

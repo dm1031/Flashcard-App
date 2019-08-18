@@ -39,9 +39,9 @@ class SolutionBox extends Component {
       .then(action => {
         const { sessionCard } = action
         this.setState({ feedback: sessionCard.result })
+        this.props.getFlashcard('all')
       })
     this.setState({ field: '' })
-    this.props.getFlashcard()
     e.preventDefault()
   }
 

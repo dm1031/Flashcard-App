@@ -1,4 +1,5 @@
 const db = require('../db')
+const SessionCard = require('./SessionCard')
 
 const Flashcard = db.define('flashcard', {
   id: {
@@ -22,13 +23,27 @@ const Flashcard = db.define('flashcard', {
   }
 })
 
-Flashcard.getRandomFlashcard = function() {
-  return Flashcard.findAll().then(flashcards => {
-    const numberOfCards = flashcards.length
-    const randomFlashcard =
-      flashcards[Math.floor(Math.random() * numberOfCards)]
-    return randomFlashcard
-  })
+Flashcard.getRandomFlashcard = async function(sessionId, result) {
+  const sessionCards = await SessionCard.getCardsByResult(
+    sessionId,
+    result === 'all' ? ['correct', 'incorrect'] : result
+  )
+
+  const flashcards = await Flashcard.findAll({ raw: true })
+
+  let availableCards, numberOfCards
+
+  if (sessionCards.length) {
+    const arrayOfFlashcardIds = sessionCards.map(card => card.flashcardId)
+    availableCards = flashcards.filter(
+      flashcard => arrayOfFlashcardIds.indexOf(flashcard.id) === -1
+    )
+  } else {
+    availableCards = flashcards
+  }
+  console.log(availableCards)
+  numberOfCards = availableCards.length
+  return availableCards[Math.floor(Math.random() * numberOfCards)]
 }
 
 module.exports = Flashcard

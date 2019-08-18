@@ -17,7 +17,17 @@ const Session = db.define('session', {
   },
   highScore: {
     type: db.Sequelize.INTEGER
+  },
+  userId: {
+    type: db.Sequelize.UUID
   }
 })
+
+Session.initializeSession = function(userId) {
+  return Session.create({
+    timeStarted: new Date(),
+    userId
+  })
+}
 
 module.exports = Session

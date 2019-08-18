@@ -29,10 +29,10 @@ export const getFlashcardsThunk = () => {
   }
 }
 
-export const getSingleFlashcardThunk = () => {
+export const getSingleFlashcardThunk = result => {
   return dispatch => {
     return axios
-      .get('/flashcard')
+      .get(`/flashcard/${result}`)
       .then(res => res.data)
       .then(currentFlashcard => dispatch(getSingleFlashcard(currentFlashcard)))
   }

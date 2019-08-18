@@ -1,51 +1,36 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
+import { HashRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import Flashcard from '../Flashcard'
-import Timer from '../Timer'
+import { Home, Nav, Login } from '../../Components'
 
-import { createSessionThunk } from '../../store/session/action'
+import { checkIfUserLoggedInThunk } from '../../store/user/action'
 
-const mapStateToProps = ({ session }) => {
+const mapStateToProps = ({ user }) => {
   return {
-    session
+    user
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    createSession: () => dispatch(createSessionThunk())
+    checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk())
   }
 }
-class App extends Component {
-  constructor() {
-    super()
-    this.state = {
-      sessionStarted: false
-    }
-  }
 
-  toggleSession() {
-    this.setState({ sessionStarted: true })
-    this.props.createSession()
+class App extends Component {
+  componentDidMount() {
+    this.props.checkIfUserLoggedIn()
   }
 
   render() {
-    const { sessionStarted } = this.state
-    const { session } = this.props
+    const { user } = this.props
     return (
-      <div>
-        {sessionStarted && session.timeStarted ? (
-          <div>
-            <Timer />
-            <Flashcard />
-          </div>
-        ) : (
-          <button type="button" onClick={() => this.toggleSession()}>
-            Start!
-          </button>
-        )}
-      </div>
+      <Fragment>
+        <Router>
+          <Route exact path="/" component={user ? Home : Login} />
+        </Router>
+      </Fragment>
     )
   }
 }

@@ -13,13 +13,13 @@ const mapStateToProps = ({ flashcard }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    getFlashcard: () => dispatch(getSingleFlashcardThunk())
+    getFlashcard: result => dispatch(getSingleFlashcardThunk(result))
   }
 }
 
 const Flashcard = ({ flashcard, getFlashcard }) => {
   useEffect(() => {
-    getFlashcard()
+    getFlashcard('all')
   }, [])
 
   return (

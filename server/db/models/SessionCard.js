@@ -17,4 +17,16 @@ const SessionCard = db.define('sessionCard', {
   }
 })
 
+SessionCard.getCardsByResult = async function(sessionId, result) {
+  const sessionCards = await SessionCard.findAll({
+    where: {
+      sessionId,
+      result
+    },
+    attributes: ['flashcardId'],
+    raw: true
+  })
+  return sessionCards
+}
+
 module.exports = SessionCard
