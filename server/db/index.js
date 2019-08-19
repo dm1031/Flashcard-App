@@ -1,15 +1,15 @@
 const db = require('./db')
-const { User, Flashcard, Session } = require('./models')
+const { User, Flashcard, Session, SessionCard } = require('./models')
 
 const initDb = (force = false) => {
   return db
     .authenticate()
     .then(() => {
-      Flashcard.belongsTo(Session)
-      Session.hasMany(Flashcard)
-
       Session.belongsTo(User)
       User.hasMany(Session)
+
+      Flashcard.belongsToMany(Session, { through: SessionCard })
+      Session.hasMany(Flashcard)
 
       return db.sync({ force })
     })

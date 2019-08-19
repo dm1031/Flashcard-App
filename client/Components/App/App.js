@@ -1,25 +1,37 @@
-import React, { Component } from 'react'
-import Flashcard from '../Flashcard'
+import React, { Component, Fragment } from 'react'
+import { HashRouter as Router, Route } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { getFlashcardsThunk } from '../../store/flashcards/action'
 
-const mapStateToProps = ({ flashcards }) => {
+import { Home, Nav, Login } from '../../Components'
+
+import { checkIfUserLoggedInThunk } from '../../store/user/action'
+
+const mapStateToProps = ({ user }) => {
   return {
-    flashcards
+    user
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    getFlashcards: () => dispatch(getFlashcardsThunk())
+    checkIfUserLoggedIn: () => dispatch(checkIfUserLoggedInThunk())
   }
 }
+
 class App extends Component {
   componentDidMount() {
-    this.props.getFlashcards()
+    this.props.checkIfUserLoggedIn()
   }
+
   render() {
-    return <div>{this.props.flashcards.length ? <Flashcard /> : ''}</div>
+    const { user } = this.props
+    return (
+      <Fragment>
+        <Router>
+          <Route exact path="/" component={user ? Home : Login} />
+        </Router>
+      </Fragment>
+    )
   }
 }
 

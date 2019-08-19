@@ -1,33 +1,36 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+
+import { getSingleFlashcardThunk } from '../../store/flashcard/action'
+
 import SolutionBox from '../SolutionBox'
 
-const mapStateToProps = ({ flashcards }) => {
+const mapStateToProps = ({ flashcard }) => {
   return {
-    flashcards
+    flashcard
   }
 }
 
-const Flashcard = ({ flashcards }) => {
-  const getRandomIndex = () => {
-    return Math.floor(Math.random() * 13)
+const mapDispatchToProps = dispatch => {
+  return {
+    getFlashcard: result => dispatch(getSingleFlashcardThunk(result))
   }
+}
 
-  const [currentCard, setCurrentCard] = useState(flashcards[getRandomIndex()])
-  const [feedback, setFeedback] = useState('')
+const Flashcard = ({ flashcard, getFlashcard }) => {
+  useEffect(() => {
+    getFlashcard('all')
+  }, [])
 
   return (
     <div>
-      <div>{currentCard ? currentCard.prompt : ''}</div>
-      <div>{feedback ? feedback : ''}</div>
-      <SolutionBox
-        solution={currentCard ? currentCard.solution : ''}
-        setCurrentCard={setCurrentCard}
-        getRandomIndex={getRandomIndex}
-        setFeedback={setFeedback}
-      />
+      {flashcard ? flashcard.prompt : ''}
+      <SolutionBox getFlashcard={getFlashcard} />
     </div>
   )
 }
 
-export default connect(mapStateToProps)(Flashcard)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Flashcard)
