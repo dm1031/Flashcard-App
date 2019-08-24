@@ -5,6 +5,7 @@ import Flashcard from '../Flashcard'
 import Timer from '../Timer'
 
 import { createSessionThunk } from '../../store/session/action'
+import { getSingleFlashcardThunk } from '../../store/flashcard/action'
 
 const mapStateToProps = ({ session, sessionCard }) => {
   return {
@@ -15,31 +16,40 @@ const mapStateToProps = ({ session, sessionCard }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createSession: () => dispatch(createSessionThunk())
+    createSession: () => dispatch(createSessionThunk()),
+    getFlashcard: result => dispatch(getSingleFlashcardThunk(result))
   }
 }
 class Home extends Component {
   constructor() {
     super()
     this.state = {
-      sessionStarted: false
+      sessionStarted: false,
+      flashcardType: 'all'
     }
+    this.toggleSession = this.toggleSession.bind(this)
   }
 
   toggleSession() {
-    this.setState({ sessionStarted: true })
-    this.props.createSession()
+    const { sessionStarted } = this.state
+    this.setState({ sessionStarted: !sessionStarted })
+    if (this.props.session.timeStarted && !sessionStarted) {
+      this.setState({ flashcardType: 'incorrect' })
+    } else if (!this.props.session.timeStarted) {
+      this.props.createSession()
+    }
   }
 
   render() {
-    const { sessionStarted } = this.state
+    const { sessionStarted, flashcardType } = this.state
     const { session } = this.props
+    const { toggleSession } = this
     return (
       <div>
         {sessionStarted && session.timeStarted ? (
           <div>
-            <Timer />
-            <Flashcard />
+            <Timer toggleSession={toggleSession} />
+            <Flashcard flashcardType={flashcardType} />
           </div>
         ) : (
           <button type="button" onClick={() => this.toggleSession()}>

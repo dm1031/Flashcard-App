@@ -1,21 +1,27 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { compareSolutions } from '../../Utilities'
+import { compareSolutions, sessionCardExists } from '../../Utilities'
 
-import { addSessionCardThunk } from '../../store/sessionCard/action'
+import {
+  addSessionCardThunk,
+  updateSessionCardThunk
+} from '../../store/sessionCard/action'
 
-const mapStateToProps = ({ flashcard, session }) => {
+const mapStateToProps = ({ flashcard, session, sessionCard }) => {
   return {
     flashcard,
-    session
+    session,
+    sessionCard
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     addSessionCard: (sessionId, flashcardId, result) =>
-      dispatch(addSessionCardThunk({ sessionId, flashcardId, result }))
+      dispatch(addSessionCardThunk({ sessionId, flashcardId, result })),
+    updateSessionCard: (sessionCardId, result) =>
+      dispatch(updateSessionCardThunk(sessionCardId, result))
   }
 }
 
@@ -30,22 +36,47 @@ class SolutionBox extends Component {
   }
 
   handleSubmit(e) {
+    const {
+      session,
+      flashcard,
+      sessionCard,
+      flashcardType,
+      getFlashcard
+    } = this.props
+
     const result = compareSolutions(
       parseInt(this.state.field, 10),
-      this.props.flashcard.solution
+      flashcard.solution
     )
-    this.props
-      .addSessionCard(this.props.session.id, this.props.flashcard.id, result)
-      .then(action => {
-        const { sessionCard } = action
-        this.setState({ feedback: sessionCard.result })
-        this.props.getFlashcard('all')
-      })
+
+    const foundSessionCard = sessionCardExists(
+      session.id,
+      flashcard.id,
+      sessionCard
+    )
+
+    let verb
+    let args
+
+    if (foundSessionCard) {
+      verb = 'update'
+      args = [foundSessionCard.id, result]
+    } else {
+      verb = 'add'
+      args = [session.id, flashcard.id, result]
+    }
+
+    this.props[`${verb}SessionCard`](...args).then(action => {
+      const { sessionCard } = action
+      this.setState({ feedback: sessionCard.result })
+      getFlashcard(flashcardType)
+    })
     this.setState({ field: '' })
     e.preventDefault()
   }
 
   render() {
+    const { field, feedback } = this.state
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -53,13 +84,13 @@ class SolutionBox extends Component {
             Answer:
             <input
               type="text"
-              value={this.state.field}
+              value={field}
               onChange={e => this.setState({ field: e.target.value })}
             />
             <input type="submit" value="Submit" />
           </label>
         </form>
-        {this.state.feedback ? this.state.feedback : ''}
+        {feedback ? feedback : ''}
       </div>
     )
   }

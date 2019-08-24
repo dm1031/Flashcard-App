@@ -29,4 +29,11 @@ SessionCard.getCardsByResult = async function(sessionId, result) {
   return sessionCards
 }
 
+SessionCard.updateSessionCard = async function(sessionCardId, result) {
+  const sessionCardToUpdate = await SessionCard.findOne({
+    where: { id: sessionCardId }
+  })
+  return sessionCardToUpdate.update({ result })
+}
+
 module.exports = SessionCard

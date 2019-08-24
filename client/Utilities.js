@@ -18,3 +18,13 @@ export const isTimeRemaining = (timeStarted, timeNeeded) => {
     return true
   }
 }
+
+export const sessionCardExists = (
+  sessionId,
+  flashcardId,
+  sessionCardsOnState
+) => {
+  return sessionCardsOnState.find(
+    c => c.sessionId === sessionId && c.flashcardId === flashcardId
+  )
+}

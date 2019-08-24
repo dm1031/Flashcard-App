@@ -66,10 +66,18 @@ app.post('/login', (req, res, next) => {
     .catch(next)
 })
 
+// ------ put routes
+
+app.put('/sessionCard/:id', (req, res, next) => {
+  SessionCard.updateSessionCard(req.params.id, req.body.result)
+    .then(sessionCard => res.send(sessionCard))
+    .catch(next)
+})
+
 // ------ error handling endware
 
 app.use((err, req, res, next) => {
-  console.log(err)
+  console.log(err.message)
   res.status(500).send(err.message)
 })
 
