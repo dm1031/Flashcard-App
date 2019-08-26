@@ -17,15 +17,15 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-const Flashcard = ({ flashcard, getFlashcard }) => {
+const Flashcard = ({ flashcard, getFlashcard, flashcardType }) => {
   useEffect(() => {
-    getFlashcard('all')
+    getFlashcard(flashcardType)
   }, [])
 
   return (
     <div>
       {flashcard ? flashcard.prompt : ''}
-      <SolutionBox getFlashcard={getFlashcard} />
+      <SolutionBox getFlashcard={getFlashcard} flashcardType={flashcardType} />
     </div>
   )
 }

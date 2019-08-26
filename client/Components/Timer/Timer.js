@@ -17,6 +17,7 @@ class Timer extends Component {
     }
     this.tick = this.tick.bind(this)
   }
+
   tick() {
     const { remainingTime } = this.state
     const { timeStarted, timeNeeded } = this.props.session
@@ -24,18 +25,24 @@ class Timer extends Component {
       this.setState({ remainingTime: remainingTime - 1 })
     }
   }
+
   componentDidUpdate() {
-    if (this.state.remainingTime > 0) {
+    if (this.state.remainingTime > 45) {
       setTimeout(() => {
         this.tick()
       }, 1000)
+    } else {
+      this.props.toggleSession()
     }
   }
+
   componentDidMount() {
     this.tick()
   }
+
   render() {
-    return <div>{this.state.remainingTime}</div>
+    const { remainingTime } = this.state
+    return <div>{remainingTime}</div>
   }
 }
 
