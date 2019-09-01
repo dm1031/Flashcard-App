@@ -1,58 +1,49 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 
-import Flashcard from '../Flashcard'
-import Timer from '../Timer'
+import SessionController from '../SessionController'
 
-import { createSessionThunk } from '../../store/session/action'
-import { getSingleFlashcardThunk } from '../../store/flashcard/action'
+import { recognition } from '../../Web-Speech-API-config'
 
-const mapStateToProps = ({ session, sessionCard }) => {
-  return {
-    session,
-    sessionCard
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    createSession: () => dispatch(createSessionThunk()),
-    getFlashcard: result => dispatch(getSingleFlashcardThunk(result))
-  }
-}
 class Home extends Component {
   constructor() {
     super()
     this.state = {
-      sessionStarted: false,
-      flashcardType: 'all'
+      sessionStarted: false
     }
     this.toggleSession = this.toggleSession.bind(this)
+    this.endSession = this.endSession.bind(this)
   }
 
   toggleSession() {
     const { sessionStarted } = this.state
     this.setState({ sessionStarted: !sessionStarted })
-    if (this.props.session.timeStarted && !sessionStarted) {
-      this.setState({ flashcardType: 'incorrect' })
-    } else if (!this.props.session.timeStarted) {
-      this.props.createSession()
+    if (sessionStarted) {
+      this.endSession()
     }
   }
 
+  endSession() {
+    recognition.onend = () => {
+      console.log('Stopped listening!')
+    }
+    recognition.stop()
+  }
+
   render() {
-    const { sessionStarted, flashcardType } = this.state
-    const { session } = this.props
+    const { sessionStarted } = this.state
     const { toggleSession } = this
+    console.log(sessionStarted)
     return (
       <div>
-        {sessionStarted && session.timeStarted ? (
+        {sessionStarted ? (
           <div>
-            <Timer toggleSession={toggleSession} />
-            <Flashcard flashcardType={flashcardType} />
+            <SessionController
+              sessionStarted={sessionStarted}
+              toggleSession={toggleSession}
+            />
           </div>
         ) : (
-          <button type="button" onClick={() => this.toggleSession()}>
+          <button type='button' onClick={() => this.toggleSession()}>
             Start!
           </button>
         )}
@@ -61,7 +52,4 @@ class Home extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Home)
+export default Home

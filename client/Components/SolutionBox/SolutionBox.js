@@ -29,7 +29,7 @@ class SolutionBox extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      field: '',
+      field: this.props.solution,
       feedback: ''
     }
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -41,13 +41,11 @@ class SolutionBox extends Component {
       flashcard,
       sessionCard,
       flashcardType,
-      getFlashcard
+      handleFlashcard,
+      solution
     } = this.props
 
-    const result = compareSolutions(
-      parseInt(this.state.field, 10),
-      flashcard.solution
-    )
+    const result = compareSolutions(parseInt(solution, 10), flashcard.solution)
 
     const foundSessionCard = sessionCardExists(
       session.id,
@@ -69,7 +67,7 @@ class SolutionBox extends Component {
     this.props[`${verb}SessionCard`](...args).then(action => {
       const { sessionCard } = action
       this.setState({ feedback: sessionCard.result })
-      getFlashcard(flashcardType)
+      handleFlashcard(flashcardType)
     })
     this.setState({ field: '' })
     e.preventDefault()
@@ -83,11 +81,11 @@ class SolutionBox extends Component {
           <label>
             Answer:
             <input
-              type="text"
+              type='text'
               value={field}
               onChange={e => this.setState({ field: e.target.value })}
             />
-            <input type="submit" value="Submit" />
+            <input type='submit' value='Submit' />
           </label>
         </form>
         {feedback ? feedback : ''}

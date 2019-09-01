@@ -30,6 +30,7 @@ app.get('/flashcards', (req, res, next) => {
 })
 
 app.get('/flashcard/:result', (req, res, next) => {
+  console.log(req.session.sessionId)
   Flashcard.getRandomFlashcard(req.session.sessionId, req.params.result)
     .then(flashcard => res.send(flashcard))
     .catch(next)
