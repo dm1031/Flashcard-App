@@ -11,6 +11,16 @@ const getAvailableFlashcardsByResult = (sessionCards, flashcards, result) => {
   }
 }
 
+const isFlashcardWithCorrectRootFactor = (flashcard, factors) => {
+  for (let i = 0; i < factors.length; ++i) {
+    if (factors[i] === flashcard.rootFactor) {
+      return true
+    }
+  }
+  return false
+}
+
 module.exports = {
-  getAvailableFlashcardsByResult
+  getAvailableFlashcardsByResult,
+  isFlashcardWithCorrectRootFactor
 }

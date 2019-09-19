@@ -15,8 +15,8 @@ const Session = db.define('session', {
     defaultValue: 60,
     allowNull: false
   },
-  highScore: {
-    type: db.Sequelize.INTEGER
+  factors: {
+    type: db.Sequelize.ARRAY(db.Sequelize.INTEGER)
   },
   userId: {
     type: db.Sequelize.UUID

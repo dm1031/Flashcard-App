@@ -7,6 +7,7 @@ import Login from './Login'
 import App from './App'
 import SpeechRecognizer from './SpeechRecognizer'
 import SessionController from './SessionController'
+import Menu from './Menu'
 
 export {
   Home,
@@ -17,5 +18,6 @@ export {
   Login,
   App,
   SpeechRecognizer,
-  SessionController
+  SessionController,
+  Menu
 }

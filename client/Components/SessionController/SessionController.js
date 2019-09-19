@@ -8,6 +8,8 @@ import SpeechRecognizer from '../SpeechRecognizer'
 import { createSessionThunk } from '../../store/session/action'
 import { getSingleFlashcardThunk } from '../../store/flashcard/action'
 
+import Menu from '../Menu'
+
 const mapStateToProps = ({ session, flashcard }) => {
   return {
     session,
@@ -39,7 +41,6 @@ class SessionController extends Component {
     } else if (!session.id) {
       createSession().then(() => {
         console.log('session created!')
-        this.handleFlashcard()
       })
     }
   }
@@ -63,7 +64,7 @@ class SessionController extends Component {
     const { handleFlashcard } = this
     return (
       <div>
-        {session.id ? (
+        {session.id && session.factors ? (
           <div>
             <Timer toggleSession={toggleSession} />
             <Flashcard flashcard={flashcard} />
@@ -73,7 +74,7 @@ class SessionController extends Component {
             />
           </div>
         ) : (
-          ''
+          <Menu handleFlashcard={handleFlashcard} />
         )}
       </div>
     )
