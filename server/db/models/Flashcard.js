@@ -1,13 +1,24 @@
 const db = require('../db')
 const SessionCard = require('./SessionCard')
+const Session = require('./Session')
 
-const { getAvailableFlashcardsByResult } = require('../../Utilities')
+const {
+  getAvailableFlashcardsByResult,
+  isFlashcardWithCorrectRootFactor
+} = require('../../Utilities')
 
 const Flashcard = db.define('flashcard', {
   id: {
     type: db.Sequelize.UUID,
     primaryKey: true,
     defaultValue: db.Sequelize.UUIDV4
+  },
+  rootFactor: {
+    type: db.Sequelize.INTEGER,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   },
   prompt: {
     type: db.Sequelize.TEXT,
@@ -26,19 +37,26 @@ const Flashcard = db.define('flashcard', {
 })
 
 Flashcard.getRandomFlashcard = async function(sessionId, result) {
-  console.log(result)
+  const session = await Session.findByPk(sessionId)
+
   const sessionCards = await SessionCard.getCardsByResult(
     sessionId,
     result === 'all' ? ['correct', 'incorrect'] : result
   )
 
   const flashcards = await Flashcard.findAll({ raw: true })
+  const flashcardsByFactor = flashcards.filter(fc =>
+    isFlashcardWithCorrectRootFactor(fc, session.factors)
+  )
+
+  console.log(flashcardsByFactor)
+
   const availableCards = getAvailableFlashcardsByResult(
     sessionCards,
-    flashcards,
+    flashcardsByFactor,
     result
   )
-  console.log(availableCards)
+
   const numberOfCards = availableCards.length
   return availableCards[Math.floor(Math.random() * numberOfCards)]
 }

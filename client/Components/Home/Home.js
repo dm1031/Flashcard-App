@@ -43,8 +43,8 @@ class Home extends Component {
             />
           </div>
         ) : (
-          <button type='button' onClick={() => this.toggleSession()}>
-            Start!
+          <button type="button" onClick={() => this.toggleSession()}>
+            Play!
           </button>
         )}
       </div>

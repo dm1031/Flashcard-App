@@ -75,6 +75,13 @@ app.put('/sessionCard/:id', (req, res, next) => {
     .catch(next)
 })
 
+app.put('/session/:id', (req, res, next) => {
+  Session.findByPk(req.params.id)
+    .then(session => session.update(req.body))
+    .then(session => res.send(session))
+    .catch(next)
+})
+
 // ------ error handling endware
 
 app.use((err, req, res, next) => {

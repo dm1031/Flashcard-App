@@ -17,6 +17,7 @@ const createFlashcardInstances = count => {
   for (let i = 1; i < count; ++i) {
     root.forEach(val =>
       createdFlashcards.push({
+        rootFactor: i,
         prompt: `${i} x ${val}`,
         solution: i * val
       })
@@ -29,7 +30,7 @@ const syncAndSeed = () => {
   return initDb(true)
     .then(() => {
       const users = createUserInstances(5)
-      const flashcards = createFlashcardInstances(2)
+      const flashcards = createFlashcardInstances(12)
 
       return Promise.all([
         users.map(user => User.create(user)),
