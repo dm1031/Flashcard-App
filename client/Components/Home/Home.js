@@ -8,15 +8,16 @@ class Home extends Component {
   constructor() {
     super()
     this.state = {
-      sessionStarted: false
+      sessionStarted: false,
+      isTimed: false
     }
     this.toggleSession = this.toggleSession.bind(this)
     this.endSession = this.endSession.bind(this)
   }
 
-  toggleSession() {
+  toggleSession(timerBool) {
     const { sessionStarted } = this.state
-    this.setState({ sessionStarted: !sessionStarted })
+    this.setState({ sessionStarted: !sessionStarted, isTimed: timerBool })
     if (sessionStarted) {
       this.endSession()
     }
@@ -30,7 +31,7 @@ class Home extends Component {
   }
 
   render() {
-    const { sessionStarted } = this.state
+    const { sessionStarted, isTimed } = this.state
     const { toggleSession } = this
     console.log(sessionStarted)
     return (
@@ -40,12 +41,18 @@ class Home extends Component {
             <SessionController
               sessionStarted={sessionStarted}
               toggleSession={toggleSession}
+              isTimed={isTimed}
             />
           </div>
         ) : (
-          <button type="button" onClick={() => this.toggleSession()}>
-            Play!
-          </button>
+          <div>
+            <button type="button" onClick={() => this.toggleSession(false)}>
+              Practice
+            </button>
+            <button type="button" onClick={() => this.toggleSession(true)}>
+              Challenge!
+            </button>
+          </div>
         )}
       </div>
     )

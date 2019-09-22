@@ -44,7 +44,7 @@ app.get('/auth', (req, res, next) => {
 // ------ post routes
 
 app.post('/session', (req, res, next) => {
-  Session.initializeSession(req.body.id)
+  Session.initializeSession(req.body.user.id, req.body.isTimed)
     .then(session => {
       req.session.sessionId = session.id
       res.send(session)

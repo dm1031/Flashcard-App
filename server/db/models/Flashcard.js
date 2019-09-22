@@ -7,34 +7,52 @@ const {
   isFlashcardWithCorrectRootFactor
 } = require('../../Utilities')
 
-const Flashcard = db.define('flashcard', {
-  id: {
-    type: db.Sequelize.UUID,
-    primaryKey: true,
-    defaultValue: db.Sequelize.UUIDV4
-  },
-  rootFactor: {
-    type: db.Sequelize.INTEGER,
-    allowNull: false,
-    validate: {
-      notEmpty: true
+const Flashcard = db.define(
+  'flashcard',
+  {
+    id: {
+      type: db.Sequelize.UUID,
+      primaryKey: true,
+      defaultValue: db.Sequelize.UUIDV4
+    },
+    rootFactor: {
+      type: db.Sequelize.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    },
+    secondaryFactor: {
+      type: db.Sequelize.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    },
+    solution: {
+      type: db.Sequelize.INTEGER,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
+    },
+    prompt: {
+      type: db.Sequelize.TEXT,
+      allowNull: false,
+      validate: {
+        notEmpty: true
+      }
     }
   },
-  prompt: {
-    type: db.Sequelize.TEXT,
-    allowNull: false,
-    validate: {
-      notEmpty: true
-    }
-  },
-  solution: {
-    type: db.Sequelize.INTEGER,
-    allowNull: false,
-    validate: {
-      notEmpty: true
+  {
+    hooks: {
+      beforeValidate: function(flashcard) {
+        flashcard.solution = flashcard.rootFactor * flashcard.secondaryFactor
+        flashcard.prompt = `${flashcard.rootFactor} x ${flashcard.secondaryFactor}`
+      }
     }
   }
-})
+)
 
 Flashcard.getRandomFlashcard = async function(sessionId, result) {
   const session = await Session.findByPk(sessionId)

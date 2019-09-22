@@ -37,7 +37,9 @@ class Timer extends Component {
   }
 
   componentDidMount() {
-    this.tick()
+    if (this.props.isTimed) {
+      this.tick()
+    }
   }
 
   render() {
