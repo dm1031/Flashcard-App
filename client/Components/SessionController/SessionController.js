@@ -19,7 +19,7 @@ const mapStateToProps = ({ session, flashcard }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    createSession: () => dispatch(createSessionThunk()),
+    createSession: isTimed => dispatch(createSessionThunk(isTimed)),
     getFlashcard: flashcardType =>
       dispatch(getSingleFlashcardThunk(flashcardType))
   }
@@ -35,11 +35,11 @@ class SessionController extends Component {
   }
 
   componentDidMount() {
-    const { session, createSession } = this.props
+    const { session, createSession, isTimed } = this.props
     if (session.id) {
       this.setState({ flashcardType: 'incorrect' })
     } else if (!session.id) {
-      createSession().then(() => {
+      createSession(isTimed).then(() => {
         console.log('session created!')
       })
     }
@@ -59,14 +59,14 @@ class SessionController extends Component {
   }
 
   render() {
-    const { toggleSession, session, flashcard } = this.props
+    const { toggleSession, session, flashcard, isTimed } = this.props
     const { flashcardType } = this.state
     const { handleFlashcard } = this
     return (
       <div>
         {session.id && session.factors ? (
           <div>
-            <Timer toggleSession={toggleSession} />
+            <Timer toggleSession={toggleSession} isTimed={isTimed} />
             <Flashcard flashcard={flashcard} />
             <SpeechRecognizer
               flashcardType={flashcardType}

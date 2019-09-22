@@ -18,8 +18,7 @@ const createFlashcardInstances = count => {
     root.forEach(val =>
       createdFlashcards.push({
         rootFactor: i,
-        prompt: `${i} x ${val}`,
-        solution: i * val
+        secondaryFactor: val
       })
     )
   }
